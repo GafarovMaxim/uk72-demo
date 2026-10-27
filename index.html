@@ -1485,9 +1485,15 @@ Object.assign(window.UK, {
     boot?.classList.add('is-done'); // страница открывается целиком, вступление играет уже на готовой странице
     hero.classList.add('is-ready');
   }
-  // ждём главную картинку и шрифты; но не дольше 4 с, чтобы страница не зависла на плохой сети
-  Promise.all([$('.hero__img').decode().catch(() => {}), Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2500))])]).then(heroReady);
-  setTimeout(heroReady, 4000);
+  // ждём всё: главную картинку, маску волн, шрифты и событие load; потом экран загрузки держим ещё секунду, не дольше 6 с суммарно
+  const maskImg = new Image(); maskImg.src = 'assets/neon-mask.png';
+  Promise.all([
+    $('.hero__img').decode().catch(() => {}),
+    maskImg.decode().catch(() => {}),
+    Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 3000))]),
+    new Promise((r) => (document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true }))),
+  ]).then(() => setTimeout(heroReady, 1000));
+  setTimeout(heroReady, 6000);
   function layoutHero() {
     const W = hero.clientWidth, H = hero.clientHeight;
     const s = Math.max(W / 1920, H / 1080) * 1.06;
