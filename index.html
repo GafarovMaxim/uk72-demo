@@ -96,7 +96,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .btn--primary:hover::after { transform: translateX(120%); }
 .btn--primary:hover { box-shadow: 0 14px 40px rgba(241, 7, 163, .45); }
-.btn--ghost { background: rgba(13, 21, 48, .55); border: 1px solid var(--line2); backdrop-filter: blur(8px); }
+.btn--ghost { background: rgba(13, 21, 48, .8); border: 1px solid var(--line2); }
 .btn--ghost:hover { border-color: var(--lilac); background: rgba(168, 85, 247, .12); }
 .btn--sm { min-height: 44px; padding: 0 18px; font-size: 14px; }
 .btn--lg { min-height: 60px; padding: 0 34px; font-size: 17px; }
@@ -134,10 +134,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__fx { mix-blend-mode: screen; }
 
 @property --off { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.hero__flow { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: plus-lighter; opacity: 0; animation: flow 2.8s linear infinite, fadein 1.2s 1.6s forwards;
+.hero__flow { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: plus-lighter; opacity: 0; animation: flow 2.8s linear 2.2s infinite, fadein 1.2s 2s forwards; 
   -webkit-mask: url(assets/neon-mask.png) 0 0 / 100% 100% no-repeat; mask: url(assets/neon-mask.png) 0 0 / 100% 100% no-repeat;
   background: repeating-radial-gradient(circle at 1492px 372px, transparent calc(0px + var(--off)), transparent calc(170px + var(--off)), rgba(255, 236, 255, .95) calc(196px + var(--off)), rgba(255, 120, 210, .5) calc(206px + var(--off)), transparent calc(236px + var(--off)), transparent calc(340px + var(--off))); }
-.hero__flow--slow { animation-name: flow2, fadein; animation-duration: 5.3s, 1.2s; mix-blend-mode: screen;
+.hero__flow--slow { animation-name: flow2, fadein; animation-duration: 5.3s, 1.2s; animation-delay: 2.2s, 2s; mix-blend-mode: screen;
   background: repeating-radial-gradient(circle at 1492px 372px, transparent calc(0px + var(--off)), rgba(168, 85, 247, 0) calc(380px + var(--off)), rgba(200, 140, 255, .7) calc(440px + var(--off)), transparent calc(520px + var(--off)), transparent calc(640px + var(--off))); }
 @keyframes flow { to { --off: -340px; } }
 @keyframes flow2 { to { --off: -640px; } }
@@ -164,11 +164,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__eyebrow, .hero__lead, .hero__actions, .hero__cats { opacity: 0; animation: fade .9s ease forwards; }
 .hero__eyebrow { animation-delay: .3s; } .hero__lead { animation-delay: 1s; } .hero__actions { animation-delay: 1.15s; } .hero__cats { animation-delay: 1.3s; }
 @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.hero__eyebrow { width: fit-content; padding: 7px 14px; border-radius: 999px; background: rgba(4,10,28,.55); backdrop-filter: blur(8px); border: 1px solid var(--line); }
+.hero__eyebrow { width: fit-content; padding: 7px 14px; border-radius: 999px; background: rgba(4,10,28,.8); border: 1px solid var(--line); }
 .hero__lead { font-size: clamp(18px, 1.6vw, 22px); color: #d9dcec; max-width: 30ch; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
 .hero__cats { list-style: none; padding: 0; margin: 44px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
-.hero__cats a { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 16px 6px 6px; border-radius: 14px; border: 1px solid var(--line); background: rgba(13,21,48,.5); backdrop-filter: blur(10px); text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600; transition: border-color .2s, color .2s, transform .2s; }
+.hero__cats a { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 16px 6px 6px; border-radius: 14px; border: 1px solid var(--line); background: rgba(13,21,48,.8); text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600; transition: border-color .2s, color .2s, transform .2s; }
 .hero__cats b { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: var(--surface2); color: #fff; font: 700 20px var(--display); }
 .hero__cats a:hover { color: #fff; border-color: var(--violet); }
 @media (hover: hover) { .hero__cats a:hover { transform: translateY(-2px); } }
@@ -221,8 +221,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .route__mcar { display: block; position: sticky; top: 55svh; height: 0; margin: 220px 0 -220px; z-index: -1; pointer-events: none; } 
   .route__mcar svg { position: absolute; left: 75%; top: 0; width: clamp(56px, 17vw, 96px); aspect-ratio: 18 / 30; translate: -50% -50%; opacity: .13; }
   
-  .route__mcar::after { content: ''; position: absolute; left: 75%; top: clamp(28px, 8.5vw, 48px); width: clamp(120px, 36vw, 200px); height: clamp(200px, 60vw, 320px); translate: -50% 0;
-    background: radial-gradient(ellipse at 50% 0, rgba(255,220,250,.07), transparent 70%); }
+  .route__mcar::after { content: ''; position: absolute; left: 75%; top: calc(clamp(56px, 17vw, 96px) * 5 / 6 - 4px); width: clamp(110px, 32vw, 180px); height: clamp(180px, 52vw, 300px); translate: -50% 0;
+    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); 
+    background: linear-gradient(180deg, rgba(255,226,250,.16), rgba(255,226,250,.05) 55%, transparent); }
 }
 .route__edge { fill: none; stroke: rgba(255,255,255,.14); stroke-width: 30; stroke-linecap: round; }
 .route__fill { fill: none; stroke: url(#routeGrad); stroke-width: 31; stroke-linecap: round; }
@@ -1917,7 +1918,7 @@ Object.assign(window.UK, {
     if (!routeOn) return;
     const r0 = routeEl.getBoundingClientRect();
     const pts = stops.map((s) => { const r = s.getBoundingClientRect(); return [r.left - r0.left + r.width / 2, r.top - r0.top + r.height / 2]; });
-    const START = -190; // дорога начинается над стыком с первым экраном, у надписи «Поехали»
+    const START = -110; // дорога начинается над стыком с первым экраном, у надписи «Поехали»
     $('#routeGo').style.setProperty('--go-x', pts[0][0] + 'px'); $('#routeGo').style.setProperty('--go-y', START + 'px');
     let [px, py] = [pts[0][0], START];
     let d = `M ${px} ${py}`;
