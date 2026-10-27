@@ -192,6 +192,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 
 .route { position: relative; }
+.route__go { display: none; }
+@media (min-width: 1180px) {
+  
+  .route__go { display: block; position: absolute; z-index: 2; left: var(--go-x, 40px); top: var(--go-y, -190px); translate: 22px -50%; rotate: -6deg;
+    font: 700 40px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: #fff;
+    text-shadow: 0 0 6px #fff, 0 0 16px #ff4fb0, 0 0 34px #a855f7, 0 0 64px rgba(168,85,247,.7); animation: goGlow 2.6s ease-in-out infinite; }
+  .route__go::after { content: ''; display: block; height: 3px; margin-top: 8px; border-radius: 2px; background: linear-gradient(90deg, #ff4fb0, #a855f7, transparent); box-shadow: 0 0 14px #ff4fb0; }
+}
+@keyframes goGlow { 50% { text-shadow: 0 0 4px #fff, 0 0 10px #ff4fb0, 0 0 22px #a855f7, 0 0 40px rgba(168,85,247,.5); } }
 .route__svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; display: none; z-index: 0; }
 @media (min-width: 1180px) { .route__svg { display: block; } }
 
@@ -707,7 +716,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
       <li><a href="#tariffs" data-cat="E" aria-label="E — с прицепом"><b>E</b><span>с прицепом</span></a></li>
     </ul>
   </div>
-  <a class="hero__scroll" href="#tariffs" aria-label="Листать дальше"><span></span>Поехали</a>
+  <a class="hero__scroll" href="#tariffs" aria-label="Листать дальше"><span></span></a>
 </section>
 
 
@@ -763,6 +772,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   </symbol>
 </svg>
 <div class="route" id="route">
+  <a class="route__go" id="routeGo" href="#tariffs" aria-label="Поехали: к тарифам">Поехали</a>
   
   <div class="route__mcar" aria-hidden="true"><svg viewBox="0 0 18 30"><use href="#carTop"/></svg></div>
   <svg class="route__svg" id="routeSvg" aria-hidden="true">
@@ -1902,7 +1912,9 @@ Object.assign(window.UK, {
     if (!routeOn) return;
     const r0 = routeEl.getBoundingClientRect();
     const pts = stops.map((s) => { const r = s.getBoundingClientRect(); return [r.left - r0.left + r.width / 2, r.top - r0.top + r.height / 2]; });
-    let [px, py] = [pts[0][0], -40];
+    const START = -190; // дорога начинается над стыком с первым экраном, у надписи «Поехали»
+    $('#routeGo').style.setProperty('--go-x', pts[0][0] + 'px'); $('#routeGo').style.setProperty('--go-y', START + 'px');
+    let [px, py] = [pts[0][0], START];
     let d = `M ${px} ${py}`;
     pts.forEach(([x, y], i) => {
       const my = (py + y) / 2, sway = i % 2 ? 16 : -34; // вправо качаем мало, чтобы дорога не наезжала на контент
@@ -1924,7 +1936,7 @@ Object.assign(window.UK, {
     const deg = (Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180) / Math.PI - 90; // машина смотрит по ходу дороги
     [fill, maskPath].forEach((el) => { el.style.strokeDashoffset = routeLen - lo; });
     car.setAttribute('transform', `translate(${p.x} ${p.y}) rotate(${deg.toFixed(1)})`);
-    car.style.opacity = lo > 2 && lo < routeLen - 2 ? 1 : 0;
+    car.style.opacity = lo < routeLen - 2 ? 1 : 0; // на старте машинка уже стоит у «Поехали»
   }
 
   /* ---------- Один цикл на кадр ---------- */
