@@ -126,7 +126,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: center; isolation: isolate; }
 .hero__stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; z-index: -3; will-change: transform; }
-.hero__img, .hero__fx { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero__img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero__fx { position: absolute; left: 1290px; top: 280px; width: 300px; height: 500px; } 
 
 .hero:not(.is-ready) * { animation-play-state: paused !important; }
 .hero__img { animation: ignite 1.8s cubic-bezier(.2,.7,.2,1) both; }
@@ -134,10 +135,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__fx { mix-blend-mode: screen; }
 
 @property --off { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.hero__flow { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: plus-lighter; opacity: 0; animation: flow 2.8s linear 2.2s infinite, fadein 1.2s 2s forwards; 
+.hero__flow { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: plus-lighter; opacity: 0; animation: flow 2.8s steps(56) 2.2s infinite, fadein 1.2s 2s forwards; 
   -webkit-mask: url(assets/neon-mask.png) 0 0 / 100% 100% no-repeat; mask: url(assets/neon-mask.png) 0 0 / 100% 100% no-repeat;
   background: repeating-radial-gradient(circle at 1492px 372px, transparent calc(0px + var(--off)), transparent calc(170px + var(--off)), rgba(255, 236, 255, .95) calc(196px + var(--off)), rgba(255, 120, 210, .5) calc(206px + var(--off)), transparent calc(236px + var(--off)), transparent calc(340px + var(--off))); }
-.hero__flow--slow { animation-name: flow2, fadein; animation-duration: 5.3s, 1.2s; animation-delay: 2.2s, 2s; mix-blend-mode: screen;
+.hero__flow--slow { animation-name: flow2, fadein; animation-duration: 5.3s, 1.2s; animation-delay: 2.2s, 2s; animation-timing-function: steps(106), ease; mix-blend-mode: screen;
   background: repeating-radial-gradient(circle at 1492px 372px, transparent calc(0px + var(--off)), rgba(168, 85, 247, 0) calc(380px + var(--off)), rgba(200, 140, 255, .7) calc(440px + var(--off)), transparent calc(520px + var(--off)), transparent calc(640px + var(--off))); }
 @keyframes flow { to { --off: -340px; } }
 @keyframes flow2 { to { --off: -640px; } }
@@ -147,8 +148,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__pin .ring { fill: none; stroke: var(--cyan); stroke-width: 2.5; transform-box: fill-box; transform-origin: center; animation: ping 2.4s ease-out infinite; }
 .hero__pin .r2 { animation-delay: 1.2s; }
 @keyframes ping { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(4.5); opacity: 0; } }
-.hero__light { position: absolute; inset: 0; z-index: -2; pointer-events: none; mix-blend-mode: screen; opacity: 0; transition: opacity .6s;
-  background: radial-gradient(420px circle at var(--mx, 70%) var(--my, 60%), rgba(196, 120, 255, .22), transparent 60%); }
+.hero__light { position: absolute; left: 0; top: 0; width: 840px; height: 840px; z-index: -2; will-change: transform; pointer-events: none; mix-blend-mode: screen; opacity: 0; transition: opacity .6s;
+  background: radial-gradient(circle, rgba(196, 120, 255, .22), transparent 60%); }
 .hero:hover .hero__light { opacity: 1; }
 .hero__shade { position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: linear-gradient(180deg, rgba(4,10,28,.75) 0, transparent 160px), linear-gradient(90deg, rgba(4,10,28,.92) 0%, rgba(4,10,28,.55) 34%, transparent 60%), linear-gradient(0deg, var(--bg) 0%, transparent 26%); }
@@ -651,7 +652,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 <header class="nav" id="nav">
   <div class="nav__in">
-    <a class="nav__logo" href="#top" aria-label="Учебный комбинат — на главную"><img src="assets/logo.webp" alt="Учебный комбинат" width="180" height="58"></a>
+    <a class="nav__logo" href="#top" aria-label="Учебный комбинат — на главную"><img src="assets/logo-360.webp" alt="Учебный комбинат" width="180" height="58"></a>
     <nav class="nav__links" aria-label="Разделы">
       <a href="#tariffs">Тарифы</a>
       <a href="#why">Преимущества</a>
@@ -684,7 +685,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <img class="hero__img" src="assets/hero.webp" alt="" width="1920" height="1080" fetchpriority="high">
     <div class="hero__flow"></div>
     <div class="hero__flow hero__flow--slow"></div>
-    <svg class="hero__fx" viewBox="0 0 1920 1080" aria-hidden="true">
+    <svg class="hero__fx" viewBox="1290 280 300 500" aria-hidden="true">
       <defs>
         <radialGradient id="tunnelGrad">
           <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
@@ -1064,7 +1065,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <footer class="foot">
   <div class="wrap">
     <div class="foot__top">
-      <img src="assets/logo.webp" alt="Учебный комбинат" width="180" height="58" loading="lazy">
+      <img src="assets/logo-360.webp" alt="Учебный комбинат" width="180" height="58" loading="lazy">
       <a class="foot__phone" href="tel:+73452615201">+7 3452 61 52 01</a>
       <div class="foot__soc">
         <a href="https://t.me/AlexRU72" target="_blank" rel="noopener">Telegram</a>
@@ -1459,7 +1460,7 @@ Object.assign(window.UK, {
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); burger.focus(); } });
 
   /* ---------- HERO: кадрирование, параллакс, свет фар ---------- */
-  const hero = $('.hero'), stage = $('#heroStage');
+  const hero = $('.hero'), stage = $('#heroStage'), light = $('#heroLight');
   const cam = { x: 0, y: 0, s: 1, mx: 0, my: 0, tx: 0, ty: 0 };
   // интро стартует, когда картинка декодирована, но не позже чем через 1.5 с
   const heroReady = () => hero.classList.add('is-ready');
@@ -1490,8 +1491,7 @@ Object.assign(window.UK, {
     const r = hero.getBoundingClientRect();
     cam.tx = (e.clientX - r.left) / r.width - 0.5;
     cam.ty = (e.clientY - r.top) / r.height - 0.5;
-    hero.style.setProperty('--mx', e.clientX - r.left + 'px');
-    hero.style.setProperty('--my', e.clientY - r.top + 'px');
+    light.style.transform = `translate3d(${e.clientX - r.left - 420}px, ${e.clientY - r.top - 420}px, 0)`;
     kick();
   });
   // гироскоп только на планшетах: на телефонах экономим кадры
