@@ -204,7 +204,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .route__svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; display: none; z-index: 0; }
 @media (min-width: 1180px) { .route__svg { display: block; } }
 
-.route__mcar { display: none; }
+.route__mcar, .route__mlane { display: none; }
 @media (max-width: 1179px) {
   .route { isolation: isolate; display: flow-root; } 
   
@@ -212,8 +212,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 260px, #000 calc(100% - 160px), transparent); mask-image: linear-gradient(180deg, transparent, #000 260px, #000 calc(100% - 160px), transparent);
     background:
       linear-gradient(90deg, transparent 2px, rgba(168,85,247,.16) 2px 4px, transparent 4px calc(100% - 4px), rgba(168,85,247,.16) calc(100% - 4px) calc(100% - 2px), transparent calc(100% - 2px)),
-      repeating-linear-gradient(180deg, rgba(255,255,255,.07) 0 34px, transparent 34px 86px) 50% 0 / 3px 100% no-repeat,
       linear-gradient(90deg, rgba(123,47,247,.035), rgba(7,13,34,.25) 20%, rgba(7,13,34,.25) 80%, rgba(194,5,138,.035)); }
+  
+  .route__mlane { display: block; position: sticky; top: 0; height: 100svh; margin-bottom: -100svh; z-index: -1; pointer-events: none;
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,.07) 0 34px, transparent 34px 86px) 50% 0 / 3px 100% no-repeat;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 15%, #000 85%, transparent); mask-image: linear-gradient(180deg, transparent, #000 15%, #000 85%, transparent); }
   .route__mcar { display: block; position: sticky; top: 55svh; height: 0; margin: 220px 0 -220px; z-index: -1; pointer-events: none; } 
   .route__mcar svg { position: absolute; left: 75%; top: 0; width: clamp(56px, 17vw, 96px); aspect-ratio: 18 / 30; translate: -50% -50%; opacity: .13; }
   
@@ -348,7 +351,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .dash b { font: 700 clamp(44px, 5vw, 72px)/1 var(--display); color: #fff; }
 .dash small { font: 700 28px var(--display); color: var(--lilac); }
 .dash span { flex-basis: 100%; color: var(--muted); font-size: 14px; margin-top: 8px; }
-@media (max-width: 900px) { .dash { grid-template-columns: repeat(2, 1fr); } .dash li { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; } .dash li:nth-child(-n+2) { border-top: 0; } .dash li:last-child { grid-column: span 2; } }
+@media (max-width: 900px) { .dash { grid-template-columns: repeat(2, 1fr); } .dash li:nth-child(even) { padding-left: 22px; } .dash li { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; } .dash li:nth-child(-n+2) { border-top: 0; } .dash li:last-child { grid-column: span 2; } }
 
 .why { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 80px); }
 .why__pic { position: sticky; top: calc(50vh - min(19vw, 230px)); align-self: start; aspect-ratio: 16 / 10.5; }
@@ -774,6 +777,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <div class="route" id="route">
   <a class="route__go" id="routeGo" href="#tariffs" aria-label="Поехали: к тарифам">Поехали</a>
   
+  <div class="route__mlane" aria-hidden="true"></div>
   <div class="route__mcar" aria-hidden="true"><svg viewBox="0 0 18 30"><use href="#carTop"/></svg></div>
   <svg class="route__svg" id="routeSvg" aria-hidden="true">
     <defs>
