@@ -221,9 +221,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .route__mcar { display: block; position: sticky; top: 55svh; height: 0; margin: 220px 0 -220px; z-index: -1; pointer-events: none; } 
   .route__mcar svg { position: absolute; left: 75%; top: 0; width: clamp(56px, 17vw, 96px); aspect-ratio: 18 / 30; translate: -50% -50%; opacity: .13; }
   
-  .route__mcar::after { content: ''; position: absolute; left: 75%; top: calc(clamp(56px, 17vw, 96px) * 5 / 6 - 4px); width: clamp(110px, 32vw, 180px); height: clamp(180px, 52vw, 300px); translate: -50% 0;
-    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); 
-    background: linear-gradient(180deg, rgba(255,226,250,.16), rgba(255,226,250,.05) 55%, transparent); }
+  .route__mcar::after { content: ''; position: absolute; left: 75%; top: calc(clamp(56px, 17vw, 96px) * 5 / 6 + 6px); width: clamp(120px, 36vw, 200px); height: clamp(170px, 48vw, 280px); translate: -50% 0;
+    
+    background: radial-gradient(ellipse 50% 100% at 50% 0, rgba(255,226,250,.11), rgba(255,226,250,.04) 55%, transparent 100%); }
 }
 .route__edge { fill: none; stroke: rgba(255,255,255,.14); stroke-width: 30; stroke-linecap: round; }
 .route__fill { fill: none; stroke: url(#routeGrad); stroke-width: 31; stroke-linecap: round; }
