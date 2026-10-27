@@ -1932,6 +1932,21 @@ Object.assign(window.UK, {
     if (!routeOn) return;
     let lo = 0, hi = routeLen;
     for (let k = 0; k < 22; k++) { const mid = (lo + hi) / 2; if (fill.getPointAtLength(mid).y < target) lo = mid; else hi = mid; }
+    goal = lo;
+    if (reduce) shown = goal;
+    else if (!rideRaf) rideRaf = requestAnimationFrame(ride);
+    paintCar();
+  }
+  // машинка неторопливо догоняет прокрутку: едет плавно и отстаёт от резкого скролла
+  let goal = 0, shown = 0, rideRaf = 0;
+  function ride() {
+    const d = goal - shown;
+    shown = Math.abs(d) < 0.5 ? goal : shown + Math.sign(d) * Math.min(Math.abs(d) * 0.045, 9); // не быстрее 9 px за кадр
+    paintCar();
+    rideRaf = shown === goal ? 0 : requestAnimationFrame(ride);
+  }
+  function paintCar() {
+    const lo = shown;
     const p = fill.getPointAtLength(lo), ahead = fill.getPointAtLength(Math.min(routeLen, lo + 6));
     const deg = (Math.atan2(ahead.y - p.y, ahead.x - p.x) * 180) / Math.PI - 90; // машина смотрит по ходу дороги
     [fill, maskPath].forEach((el) => { el.style.strokeDashoffset = routeLen - lo; });
