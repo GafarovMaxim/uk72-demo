@@ -11,7 +11,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="assets/hero.webp">
+<link rel="preload" as="image" href="assets/hero.webp" imagesrcset="assets/hero-1280.webp 1280w, assets/hero.webp 1920w" imagesizes="100vw">
+<style>
+/* экран загрузки: страница открывается целиком, когда готовы шрифты и главная картинка */
+.boot{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;align-content:center;gap:22px;background:#040a1c;transition:opacity .5s,visibility .5s}
+.boot.is-done{opacity:0;visibility:hidden;pointer-events:none}
+.boot img{width:64px;height:auto;animation:bootPulse 1.4s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(168,85,247,.8))}
+.boot span{width:140px;height:3px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+.boot span::after{content:'';position:absolute;inset:0;width:45%;border-radius:2px;background:linear-gradient(90deg,#7b2ff7,#ff4fb0);animation:bootBar 1.1s ease-in-out infinite}
+@keyframes bootPulse{50%{transform:scale(1.12);opacity:.8}}
+@keyframes bootBar{from{transform:translateX(-100%)}to{transform:translateX(320%)}}
+</style>
+<noscript><style>.boot{display:none}</style></noscript>
 <style>
 :root {
   --bg: #040a1c;
@@ -126,6 +137,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: center; isolation: isolate; }
 .hero__stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; z-index: -3; will-change: transform; }
+
+.hero__stage { background: url(data:image/webp;base64,UklGRkABAABXRUJQVlA4IDQBAAAQCACdASpAACQAPt1ipk8opaMmqrgMARAbiUAZGrGqgVujYnx3y1Ae8lBP1q2LZpzW0Ag20eLU1uwLH8AnPpgi2InKuKhERWgAAP73DWbJ3m3w2HRmpMVU56IBRTadyfPMLAukxqdNFJU4LMGBh42hxeDE2CrwXbS/7/qc+MCRzCYQScIsb5fraFE8+lTInniH/tyYI3GBjHX3IgKC75ywZIiCT/cQx4Cjp06kWqnxGQBB7Do/TUF5ofMSIuDrAjPjMTqy4hu7Gi0kTu5mXkAQy4AgxwsRA5anNXPM6Tjq2DRR4gfbJodZmK5ULY+v4bvY97hRrWseZpU69o+zn5Oq7aEeC8tc8iyoUpMzuWwv+t+gJ5CVYuVkdbAsXoNl5wN68mLoFYWanw0v+mdGFnUucRgAAA==) 0 0 / 100% 100% no-repeat; }
 .hero__img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero__fx { position: absolute; left: 1290px; top: 280px; width: 300px; height: 500px; } 
 
@@ -648,6 +661,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 </style>
 </head>
 <body>
+<div class="boot" id="boot" aria-hidden="true"><img src="assets/mark.png" alt="" width="64" height="61"><span></span></div>
 <a class="skip" href="#main">К содержанию</a>
 
 <header class="nav" id="nav">
@@ -682,7 +696,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 <section class="hero" id="top" aria-label="Учебный комбинат">
   <div class="hero__stage" id="heroStage">
-    <img class="hero__img" src="assets/hero.webp" alt="" width="1920" height="1080" fetchpriority="high">
+    <img class="hero__img" src="assets/hero.webp" srcset="assets/hero-1280.webp 1280w, assets/hero.webp 1920w" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high">
     <div class="hero__flow"></div>
     <div class="hero__flow hero__flow--slow"></div>
     <svg class="hero__fx" viewBox="1290 280 300 500" aria-hidden="true">
@@ -1462,10 +1476,18 @@ Object.assign(window.UK, {
   /* ---------- HERO: кадрирование, параллакс, свет фар ---------- */
   const hero = $('.hero'), stage = $('#heroStage'), light = $('#heroLight');
   const cam = { x: 0, y: 0, s: 1, mx: 0, my: 0, tx: 0, ty: 0 };
-  // интро стартует, когда картинка декодирована, но не позже чем через 1.5 с
-  const heroReady = () => hero.classList.add('is-ready');
-  $('.hero__img').decode().then(heroReady, heroReady);
-  setTimeout(heroReady, 1500);
+  // экран загрузки снимается и интро стартует, когда готовы картинка и шрифты
+  const boot = $('#boot');
+  let revealed = false;
+  function heroReady() {
+    if (revealed) return;
+    revealed = true;
+    boot?.classList.add('is-done'); // страница открывается целиком, вступление играет уже на готовой странице
+    hero.classList.add('is-ready');
+  }
+  // ждём главную картинку и шрифты; но не дольше 4 с, чтобы страница не зависла на плохой сети
+  Promise.all([$('.hero__img').decode().catch(() => {}), Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2500))])]).then(heroReady);
+  setTimeout(heroReady, 4000);
   function layoutHero() {
     const W = hero.clientWidth, H = hero.clientHeight;
     const s = Math.max(W / 1920, H / 1080) * 1.06;
