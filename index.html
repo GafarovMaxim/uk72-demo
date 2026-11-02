@@ -426,7 +426,8 @@ body.has-menu .dock { visibility: hidden; }
 
 .branches { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; height: min(78vh, 720px); min-height: 560px; }
 .branches > *, .branches__tools, .blist, .bcard { min-width: 0; }
-.branches__map { border-radius: 28px; overflow: hidden; border: 1px solid var(--line); background: #0a1128; }
+.branches__visual { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.branches__map { flex: 1; min-height: 260px; border-radius: 28px; overflow: hidden; border: 1px solid var(--line); background: #0a1128; }
 .branches__side { display: flex; flex-direction: column; min-height: 0; border-radius: 28px; border: 1px solid var(--line); background: rgba(13,21,48,.7); padding: 18px; }
 .branches__tools { display: grid; gap: 12px; }
 .search { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line2); background: var(--surface2); }
@@ -464,18 +465,27 @@ body.has-menu .dock { visibility: hidden; }
 
 .branches__map [class*="ground-pane"] { filter: url(#mapNight); }
 .branches__map [class*="copyrights-pane"] { opacity: .75; }
-.branches__map [class*="balloon__layout"], .branches__map [class*="balloon__content"], .branches__map [class*="balloon__tail"]::after { background: var(--surface2) !important; color: #fff; }
-.branches__map [class*="balloon"] { box-shadow: none; }
-.branches__map [class*="balloon__layout"] { border: 1px solid var(--line2); border-radius: 14px; overflow: hidden; }
-.branches__map [class*="balloon-content__header"] { font: 700 16px var(--display); text-transform: uppercase; color: #fff; }
-.branches__map [class*="balloon__content"] { font: 14px/1.45 var(--body); }
-.branches__map [class*="balloon__close-button"] { filter: invert(1); }
-.mk-next { color: var(--muted); }
+
+.map-info { position: relative; flex: none; min-width: 0; padding: 18px; border: 1px solid rgba(168,85,247,.4); border-radius: 22px; background: linear-gradient(145deg, #1b1c3e, #0d1530 75%); scroll-margin-top: 90px; scroll-margin-bottom: 110px; }
+.map-info__eyebrow { padding-right: 40px; color: var(--lilac); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.map-info h3 { margin: 8px 30px 8px 0; font-size: 22px; line-height: 1.2; overflow-wrap: anywhere; }
+.map-info__address { color: #fff; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.map-info__next { margin-top: 8px; color: var(--muted); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.map-info__next time { color: var(--lilac); font-weight: 600; }
+.map-info__close { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font: 300 30px/1 var(--body); }
+.map-info__close:hover { color: #fff; background: rgba(255,255,255,.06); }
+.map-info__actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.map-info__actions .btn { min-width: 0; min-height: 44px; padding: 10px 12px; font-size: 13px; line-height: 1.3; text-align: center; letter-spacing: .03em; }
+@media (max-width: 560px) {
+  .map-info { padding: 16px; border-radius: 20px; }
+  .map-info__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .map-info__signup { grid-column: 1 / -1; }
+}
 .mk { position: relative; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%; background: var(--grad); border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(168,85,247,.3), 0 0 18px #f107a3; transition: transform .25s; }
 .mk.is-on { transform: scale(1.5); box-shadow: 0 0 0 8px rgba(69,230,224,.25), 0 0 24px var(--cyan); }
 @media (max-width: 900px) {
   .branches { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 0; }
-  .branches__map { height: 360px; width: 100%; }
+  .branches__map { flex: none; height: 360px; width: 100%; }
   .blist { overflow: visible; padding-right: 0; }
 }
 @media (max-width: 560px) {
@@ -1031,7 +1041,14 @@ body.has-menu .dock { visibility: hidden; }
         <p class="sec__sub">Выбери филиал рядом с домом — здесь адреса, телефоны и ближайшие группы.</p>
       </header>
       <div class="branches" data-reveal>
-        <div class="branches__map" id="map" role="region" aria-label="Карта филиалов"></div>
+        <div class="branches__visual">
+          <div class="branches__map" id="map" role="region" aria-label="Карта филиалов" tabindex="-1"></div>
+          <section class="map-info" id="mapInfo" aria-labelledby="mapBranchTitle" hidden>
+            <button class="map-info__close" type="button" aria-label="Закрыть описание филиала">×</button>
+            <div id="mapInfoText" aria-live="polite" aria-atomic="true"></div>
+            <div class="map-info__actions" id="mapInfoActions"></div>
+          </section>
+        </div>
         <div class="branches__side">
           <div class="branches__tools">
             <label class="search"><span class="sr">Поиск филиала</span>
@@ -1930,18 +1947,47 @@ Object.assign(window.UK, {
         </div>
       </li>`).join('') + (list.length > cut ? `<li class="blist__more"><button type="button" class="btn btn--ghost" id="bMore">Показать все ${list.length}</button></li>` : '');
   }
+  const mapInfo = $('#mapInfo');
+  function renderMapSelection(b) {
+    const next = upcoming(b)[0];
+    $('#mapInfoText').innerHTML = `
+      <p class="map-info__eyebrow">Выбранный филиал</p>
+      <h3 id="mapBranchTitle">${esc(b.name)}</h3>
+      <p class="map-info__address">${esc(b.address)}</p>
+      <p class="map-info__next">${next ? `Ближайшая группа: <time datetime="${next.iso}">с ${fmt(next.date)}</time><br>${esc(next.when)}` : 'Новую группу набираем — дату старта подскажет администратор.'}</p>`;
+    $('#mapInfoActions').innerHTML = `
+      <a class="btn btn--ghost" href="${tel(b.phones[0])}" aria-label="Позвонить в филиал: ${esc(b.phones[0])}">Позвонить</a>
+      <a class="btn btn--ghost" href="${route(b)}" target="_blank" rel="noopener">Маршрут ↗</a>
+      <a class="btn btn--primary map-info__signup" href="#signup" data-branch="${b.i}">Записаться</a>`;
+    mapInfo.hidden = false;
+  }
   function pickBranch(i, fromMap) {
     activeB = i;
-    const b = D.branches[i];
+    const b = branches[i];
+    renderMapSelection(b);
     $$('.bcard').forEach((c) => c.classList.toggle('is-on', +c.dataset.b === i));
     Object.entries(markers).forEach(([k, m]) => m.options.set('iconLayout', m.layouts[+k === i ? 1 : 0]));
-    if (map && map.setCenter) { map.setCenter(b.ll, 15, { duration: reduce ? 0 : 600 }).then(() => markers[i].balloon.open()); }
-    if (fromMap) {
-      if (!$(`.bcard[data-b="${i}"]`)) { showAll = true; renderBranches(); }
+    if (map && map.setCenter) map.setCenter(b.ll, 15, { duration: reduce ? 0 : 450 });
+    if (fromMap && !narrow.matches) {
       const card = $(`.bcard[data-b="${i}"]`), list = $('#bList');
       if (card) list.scrollTo({ top: card.offsetTop - list.offsetTop - 8, behavior: reduce ? 'auto' : 'smooth' });
     }
+    if (narrow.matches && fromMap) mapInfo.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
   }
+  mapInfo.addEventListener('click', (e) => {
+    const sign = e.target.closest('[data-branch]');
+    if (sign) {
+      e.preventDefault();
+      window.MiniApp?.open({ branch: D.branches[+sign.dataset.branch].address });
+    }
+    if (e.target.closest('.map-info__close')) {
+      activeB = null;
+      mapInfo.hidden = true;
+      $$('.bcard').forEach((c) => c.classList.remove('is-on'));
+      Object.values(markers).forEach((m) => m.options.set('iconLayout', m.layouts[0]));
+      $('#map').focus({ preventScroll: true });
+    }
+  });
   $('#bList').addEventListener('click', (e) => {
     const sign = e.target.closest('[data-branch]');
     if (sign) { e.preventDefault(); window.MiniApp?.open({ branch: D.branches[+sign.dataset.branch].address }); return; }
@@ -2004,17 +2050,15 @@ Object.assign(window.UK, {
       const dotOn = ymaps.templateLayoutFactory.createClass('<div class="mk is-on"></div>');
       const shape = { type: 'Circle', coordinates: [0, 0], radius: 16 };
       branches.forEach((b) => {
-        const n = upcoming(b)[0], next = n ? `Ближайшая группа: с ${fmt(n.date)}, ${n.when}` : 'Новую группу набираем — уточните у администратора';
         const pm = new ymaps.Placemark(b.ll, {
           hintContent: esc(b.name),
-          balloonContentHeader: esc(b.name),
-          balloonContentBody: `${esc(b.address)}<br><span class="mk-next">${esc(next)}</span>`,
-        }, { iconLayout: dot, iconShape: shape, hideIconOnBalloonOpen: false, balloonOffset: [0, -16] });
+        }, { iconLayout: dot, iconShape: shape, openBalloonOnClick: false });
         pm.events.add('click', () => pickBranch(b.i, true));
         pm.layouts = [dot, dotOn];
         markers[b.i] = pm;
         map.geoObjects.add(pm);
       });
+      new ResizeObserver(() => map.container.fitToViewport()).observe($('#map'));
       map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 30 });
       if (activeB != null) pickBranch(activeB);
   }
